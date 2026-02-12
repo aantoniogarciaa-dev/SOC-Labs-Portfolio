@@ -6,11 +6,17 @@
 1️⃣ Alert Overview
 
 Alert Name: Email Marked as Phishing after Delivery
+
 Severity: Medium
+
 Date & Time: March 27th, 2025 – 19:25
+
 Source IP: Not available in provided logs
+
 Destination IP: Not available in provided logs
+
 Hostname: Not available in provided logs
+
 User: Eddie Huffman (IT Manager) – e.huffman@tryhackme.thm
 
 Event ID: Not available in provided logs
