@@ -1,74 +1,75 @@
-# 🛡️ Informe de Investigación SOC: Phishing de Suplantación de Amazon (Caso #8815)
+# Informe de Incidente: Phishing de Amazon y Bloqueo Perimetral (Caso #8815)
 
-**Analista:** Antonio García García  
-**Fecha de Investigación:** 15/02/2026  
-**ID del Incidente:** #8815  
-**Severidad:** Media-Alta  
-**Estado:** Cerrado (True Positive)  
-**Entorno:** TryHackMe SOC Lab - Blue Team
+**Analista:** Antonio García García
+**Fecha del Incidente:** 15/02/2026
+**ID del Caso:** #8815
+**Severidad:** medio
+**Estado:** Resuelto (True Positive - Bloqueado)
+**Certificación/Ruta:** TryHackMe - SOC Analyst / Blue Team
 
 ---
 
 ## 📝 Resumen Ejecutivo
-Este informe documenta la investigación de una alerta de **Phishing** que suplantaba la identidad de Amazon. Mediante la correlación de logs en el SIEM (**Splunk**), se confirmó que un correo malicioso fue entregado y que el sistema de defensa perimetral permitió la conexión saliente hacia la infraestructura del atacante, lo que indica un compromiso potencial del endpoint.
+Investigación técnica de una campaña de **Phishing** que suplantaba a Amazon mediante una notificación de paquete no entregado. El análisis en el SIEM confirmó la recepción del correo malicioso, pero a diferencia de otros eventos, los logs del firewall demuestran que el intento de acceso a la URL maliciosa fue interceptado y bloqueado con éxito.
 
 ---
 
-## 🔍 Análisis Técnico del Incidente
+## 🔍 Investigación y Análisis
 
-### 1. Vector de Entrada (Email)
-El ataque se originó mediante un correo electrónico entrante diseñado con tácticas de ingeniería social (urgencia por paquete no entregado).
+### 1. Vector de Ataque Inicial (Email)
+Se identificó un correo entrante con indicadores críticos de fraude, utilizando un dominio de baja reputación (`.biz`) y un enlace acortado para ofuscar el destino real.
 
 * **Timestamp:** 15/02/2026 19:09:21.447.
-* **Remitente:** `urgents@amazon.biz` (Dominio no oficial).
+* **Remitente:** `urgents@amazon.biz`.
 * **Destinatario:** `h.harris@thetrydaily.thm`.
 * **Asunto:** *Your Amazon Package Couldn’t Be Delivered – Action Required*.
-* **Enlace Detectado:** `http://bit.ly/3sHkX3da12340` (URL acortada para evadir firmas).
+* **URL Detectada:** `http://bit.ly/3sHkX3da12340`.
 
-> ![Evidencia del Correo Malicioso] <img width="1494" height="499" alt="image" src="https://github.com/user-attachments/assets/7619f7e6-6645-42cb-adec-2a393847d4a5" />
- 
-> *Figura 1: Captura de la alerta 8815 mostrando el cuerpo del correo y los metadatos del atacante.*
+> ![Detalle de la Alerta 8815] <img width="1512" height="405" alt="image" src="https://github.com/user-attachments/assets/3a79baae-ca58-408e-9735-5ef541276a2d" />
 
----
-
-### 2. Auditoría del Firewall y Tráfico de Red
-Tras analizar los logs de red vinculados al host afectado, se identificó un fallo en la contención automática del Firewall.
-
-* **Acción Realizada:** **`allowed`** (La conexión fue permitida satisfactoriamente).
-* **Regla de Firewall:** `Allow-Internet` (Filtro genérico sin restricción de reputación).
-* **Endpoint Afectado:** `10.20.2.10`.
-* **Destino Externo:** `192.0.2.25` (Puerto 443/TCP).
-
-> ![Logs de Tráfico Splunk] <img width="1730" height="395" alt="image" src="https://github.com/user-attachments/assets/8ea4a726-14c6-4dbb-bd37-6248f6f4093c" />
- 
-> *Figura 2: Detalle de los logs en Splunk donde se evidencia que el tráfico hacia la URL sospechosa no fue bloqueado.*
+> *Figura 1: Alerta generada por el sistema tras detectar el enlace externo sospechoso en el correo inbound.*
 
 ---
 
-### 3. Indicadores de Compromiso (IoCs)
-| Tipo | Valor |
-| :--- | :--- |
-| **Dominio Atacante** | `amazon.biz` |
-| **URL de Phishing** | `http://bit.ly/3sHkX3da12340` |
-| **IP Destino Sospechosa** | `192.0.2.25` |
+### 2. Auditoría del Firewall y Bloqueo (Logs)
+Tras una revisión exhaustiva de los logs de tráfico web en **Splunk**, se ha verificado que la infraestructura de seguridad actuó de forma preventiva ante el clic del usuario:
+
+* **Acción:** **blocked** (Conexión denegada por el firewall).
+* **IP de Origen:** `10.20.2.17`.
+* **IP de Destino:** `67.199.248.11`.
+* **Regla de Firewall:** `Blocked Websites`.
+* **URL Bloqueada:** `http://bit.ly/3sHkX3da12340`.
+
+> ![Log de Bloqueo en Splunk] <img width="1626" height="611" alt="image" src="https://github.com/user-attachments/assets/415ad994-4539-4be9-94b7-4f8aca2e9240" />
+
+> *Figura 2: Registro en Splunk confirmando la interceptación del tráfico hacia el dominio malicioso.*
+
+---
+
+### 3. Entidades Afectadas e IOCs
+* **Usuario:** `h.harris@thetrydaily.thm`.
+* **Endpoint:** `10.20.2.17`.
+* **Indicadores de Compromiso (IOCs):**
+    * **Dominio Atacante:** `amazon.biz`.
+    * **URL Maliciosa:** `http://bit.ly/3sHkX3da12340`.
+    * **IP Maliciosa:** `67.199.248.11`.
 
 ---
 
 ## 🛡️ Remediación y Escalado
-**Clasificación:** Verdadero Positivo (True Positive).  
-**Escalado:** **Requerido** (Debido a la conexión exitosa del endpoint con el IoC).
+**Clasificación:** **Verdadero Positivo (True Positive)**.
+**Escalado:** **No** (Control preventivo efectivo).
 
-### Acciones de Respuesta Ejecutadas:
-1. **Contención:** Bloqueo inmediato del dominio `amazon.biz` y la URL `bit.ly` en el Gateway de seguridad corporativo.
-2. **Erradicación:** Purga del correo malicioso en el servidor de correo para evitar la propagación a otros usuarios.
-3. **Gestión de Identidades:** Notificación al usuario `h.harris` para el cambio de credenciales ante un posible robo de datos (Credential Harvesting).
-4. **Mejora Continua:** Revisión de las políticas de firewall para denegar tráfico saliente a TLDs de baja reputación (como `.biz`) y restringir el uso de acortadores de URL.
+Aunque el ataque fue contenido, se han tomado las siguientes medidas para reforzar la postura de seguridad:
 
----
-
-## 🛠️ Herramientas Utilizadas
-* **Splunk (SIEM):** Correlación de logs de eventos (`eventcollector`) y logs de firewall.
-* **Investigación de Red:** Análisis de protocolos TCP/HTTPS y acciones de políticas de acceso.
-* **Metodología:** Gestión de incidentes basada en el ciclo de vida del NIST.
+### Acciones Realizadas:
+* **Validación de Bloqueo:** Se confirmó que no hubo transferencia de datos (0 bytes) hacia el destino malicioso.
+* **Limpieza de Buzón:** Eliminación del correo malicioso de la bandeja de entrada de `h.harris` para evitar futuros intentos de acceso.
+* **Actualización de Listas Negras:** Inclusión permanente del dominio `amazon.biz` en el filtro de correo corporativo para bloquearlo en la etapa de recepción.
 
 ---
+
+## 🛠️ Herramientas y Metodología
+* **Splunk (SIEM):** Correlación de logs de correo y registros de red del firewall.
+* **Firewall Analysis:** Verificación de acciones de bloqueo (`action: blocked`) y cumplimiento de reglas de filtrado URL.
+* **Metodología:** Análisis forense de red basado en el ciclo de vida de respuesta a incidentes del NIST.
