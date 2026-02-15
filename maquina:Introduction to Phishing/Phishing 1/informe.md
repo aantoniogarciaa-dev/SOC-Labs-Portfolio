@@ -40,8 +40,7 @@ La correlación de eventos en el SIEM permitió reconstruir la línea de tiempo 
 | **19:14:20** | **Actividad Interna** | Envío de correos sobre "Hiring Update" desde la cuenta de la víctima. |
 | **19:14:33** | **Confirmación ATO** | **Actividad Sospechosa:** El usuario se auto-envía una encuesta de feedback interna. |
 
-> ![Correlación en Splunk](<img width="1701" height="898" alt="image" src="https://github.com/user-attachments/assets/70823b40-e240-4330-90a6-8dd796245a14" />
-)  
+> ![Correlación en Splunk]<img width="1701" height="898" alt="image" src="https://github.com/user-attachments/assets/70823b40-e240-4330-90a6-8dd796245a14" />  
 > *Figura 2: Análisis de logs JSON donde se observa la persistencia del atacante y el envío de correos internos no autorizados.*
 
 ---
@@ -65,8 +64,7 @@ El incidente se clasificó como crítico tras hallar evidencias de **Account Tak
 3. **Erradicación:** Bloqueo del dominio malicioso `hrconnex.thm` en el Firewall y Gateway de correo.
 4. **Saneamiento:** Auditoría de los logs de Splunk para descartar movimientos laterales adicionales.
 
-> ![Informe Final TryHackMe](<img width="1500" height="884" alt="image" src="https://github.com/user-attachments/assets/679b0f5e-4ea6-42ac-9b91-3cfb74a12a65" />
-)  
+> ![Informe Final TryHackMe]<img width="1500" height="884" alt="image" src="https://github.com/user-attachments/assets/679b0f5e-4ea6-42ac-9b91-3cfb74a12a65" /> 
 > *Figura 3: Informe de incidente finalizado y clasificado correctamente para su cierre en el laboratorio.*
 
 ---
