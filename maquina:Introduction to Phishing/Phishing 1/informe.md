@@ -25,8 +25,7 @@ El incidente comenzó con una alerta automática por un correo entrante que cont
 * **Asunto:** *Action Required: Finalize Your Onboarding Profile*.
 * **URL Maliciosa:** `https://hrconnex.thm/onboarding/15400654060/j.garcia`.
 
-> ![Alerta Inicial de Phishing](<img width="1457" height="706" alt="image" src="https://github.com/user-attachments/assets/e8ef211f-24bd-43fb-86fb-8d2022127878" />
-)  
+> ![Alerta Inicial de Phishing]<img width="1457" height="706" alt="image" src="https://github.com/user-attachments/assets/e8ef211f-24bd-43fb-86fb-8d2022127878" />  
 > *Figura 1: Detalle de la alerta inicial en el panel de control del SOC donde se identifica el correo malicioso y el enlace externo.*
 
 ---
