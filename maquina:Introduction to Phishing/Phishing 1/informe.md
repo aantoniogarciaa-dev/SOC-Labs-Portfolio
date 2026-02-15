@@ -40,7 +40,8 @@ La correlación de eventos en el SIEM permitió reconstruir la línea de tiempo 
 | **19:14:20** | **Actividad Interna** | Envío de correos sobre "Hiring Update" desde la cuenta de la víctima. |
 | **19:14:33** | **Confirmación ATO** | **Actividad Sospechosa:** El usuario se auto-envía una encuesta de feedback interna. |
 
-> ![Correlación en Splunk]<img width="1701" height="898" alt="image" src="https://github.com/user-attachments/assets/70823b40-e240-4330-90a6-8dd796245a14" />  
+> ![Correlación en Splunk] <img width="1702" height="897" alt="image" src="https://github.com/user-attachments/assets/50e878c1-6e5d-41be-87c8-99f533145076" />
+
 > *Figura 2: Análisis de logs JSON donde se observa la persistencia del atacante y el envío de correos internos no autorizados.*
 
 ---
