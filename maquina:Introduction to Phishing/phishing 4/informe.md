@@ -61,3 +61,7 @@ La investigación reveló que el host del usuario estableció una conexión web 
 * **Splunk (SIEM):** Correlación de logs JSON de correo y tráfico de red.
 * **Análisis de Dominios:** Identificación de técnicas de suplantación de marca y Typosquatting.
 * **Metodología:** Seguimiento del ciclo de vida de respuesta a incidentes basado en marcos de trabajo SOC.
+
+
+regla utilizada en splunk: index=* "m1crosoftsupport.co"
+| table _time, src_ip, dest_ip, action, url, rule
