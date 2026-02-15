@@ -1,77 +1,58 @@
-# Informe de Incidente: Phishing y Compromiso de Cuenta (ATO)
+# Informe de Incidente: Análisis de Phishing (Caso #8814)
 
-**Analista:** Antonio García García  
-**Fecha del Incidente:** 15/02/2026  
-**ID del Caso:** #8814  
-**Severidad:** Alta  
-**Estado:** Resuelto (Entorno de Laboratorio)  
+**Analista:** Antonio García García
+**Fecha del Incidente:** 15/02/2026
+**ID del Caso:** #8814
+**Severidad:** Baja (Reclasificado)
+**Estado:** Resuelto (Falso Positivo)
 **Certificación/Ruta:** TryHackMe - SOC Analyst / Blue Team
 
 ---
 
 ## 📝 Resumen Ejecutivo
-Este proyecto detalla la investigación técnica de un incidente de **Phishing** que resultó en un **Compromiso de Cuenta (Account Takeover)**. Utilizando **Splunk** como SIEM, identifiqué un vector de ataque inicial mediante un correo malicioso, seguido de actividad no autorizada interna en un intervalo de pocos minutos, lo que confirma el éxito del ataque de ingeniería social.
+Investigación técnica de una alerta de **Phishing** que involucraba un supuesto proceso de "onboarding" de la empresa. Tras realizar una correlación de eventos en el SIEM (**Splunk**) y auditar los logs de tráfico del Firewall, se determinó que el incidente es un **Falso Positivo**, ya que no se detectó interacción del usuario con el enlace malicioso ni conexiones salientes sospechosas.
 
 ---
 
 ## 🔍 Investigación y Análisis
 
-### 1. Vector de Ataque Inicial
-El incidente comenzó con una alerta automática por un correo entrante que contenía un enlace externo sospechoso con características de suplantación de identidad para un proceso de "onboarding".
-
+### 1. Vector de Ataque Identificado (Email)
+La alerta se disparó por un correo entrante con las siguientes características:
 * **Timestamp:** 15/02/2026 19:06:08.447.
 * **Remitente:** `onboarding@hrconnex.thm`.
 * **Destinatario:** `j.garcia@thetrydaily.thm`.
 * **Asunto:** *Action Required: Finalize Your Onboarding Profile*.
-* **URL Maliciosa:** `https://hrconnex.thm/onboarding/15400654060/j.garcia`.
+* **URL Sospechosa:** `https://hrconnex.thm/onboarding/15400654060/j.garcia`.
 
 > ![Alerta Inicial de Phishing]<img width="1457" height="706" alt="image" src="https://github.com/user-attachments/assets/e8ef211f-24bd-43fb-86fb-8d2022127878" />  
 > *Figura 1: Detalle de la alerta inicial en el panel de control del SOC donde se identifica el correo malicioso y el enlace externo.*
 
 ---
 
-### 2. Cronología del Compromiso (Timeline)
-La correlación de eventos en el SIEM permitió reconstruir la línea de tiempo del ataque, demostrando la rapidez con la que se generó actividad inusual tras la entrega del correo:
-
-| Hora (15/02/2026) | Tipo de Evento | Detalles del Evento |
-| :--- | :--- | :--- |
-| **19:06:08** | **Correo Entrante** | Recepción del enlace de phishing desde `onboarding@hrconnex.thm`. |
-| **19:12:06** | **Actividad Interna** | La cuenta comprometida envía correos sobre "New Product Launch". |
-| **19:14:20** | **Actividad Interna** | Envío de correos sobre "Hiring Update" desde la cuenta de la víctima. |
-| **19:14:33** | **Confirmación ATO** | **Actividad Sospechosa:** El usuario se auto-envía una encuesta de feedback interna. |
+### 2. Auditoría de Red y SIEM
+Para validar la alerta, se procedió a buscar cualquier rastro de conexión hacia el dominio `hrconnex.thm` en los logs de red:
+* **Análisis de Firewall:** No se encontraron registros de tráfico saliente (`allowed`) desde la IP de la víctima hacia el dominio malicioso en la ventana de tiempo del incidente.
+* **Comportamiento del Endpoint:** No existen evidencias de descarga de archivos, ejecución de procesos inusuales o tráfico de red anómalo posterior a la recepción del correo.
 
 > ![Correlación en Splunk] <img width="1702" height="897" alt="image" src="https://github.com/user-attachments/assets/50e878c1-6e5d-41be-87c8-99f533145076" />
 
-> *Figura 2: Análisis de logs JSON donde se observa la persistencia del atacante y el envío de correos internos no autorizados.*
+
+
+### 3. Conclusión de la Investigación
+**Clasificación:** **Falso Positivo (False Positive)**.
+
+A pesar de que el correo tiene una apariencia maliciosa y utiliza un dominio externo no corporativo, la ausencia de interacción por parte del usuario y la falta de registros en el firewall confirman que la amenaza no se materializó. El sistema de detección actuó correctamente al alertar, pero no hubo compromiso de seguridad.
 
 ---
 
-### 3. Entidades Afectadas
-* **Usuario:** `j.garcia@thetrydaily.thm` (Compromiso principal identificado).
-* **Host de Origen:** `10.10.74.44` (Puerto: 8989).
-* **Dominio Atacante (IOC):** `hrconnex.thm`.
-
----
-
-## 🛡️ Remediación y Escalado
-**Clasificación:** Verdadero Positivo (True Positive).  
-**Escalado:** Requerido.
-
-El incidente se clasificó como crítico tras hallar evidencias de **Account Takeover (ATO)**. El atacante logró que el usuario interactuara con el enlace, obteniendo acceso para realizar comunicaciones internas desde la cuenta legítima.
-
-### Acciones Realizadas:
-1. **Contención:** Bloqueo preventivo de la cuenta afectada y aislamiento del host `10.10.74.44`.
-2. **Control de Acceso:** Reseteo de credenciales y revocación de sesiones activas en el sistema.
-3. **Erradicación:** Bloqueo del dominio malicioso `hrconnex.thm` en el Firewall y Gateway de correo.
-4. **Saneamiento:** Auditoría de los logs de Splunk para descartar movimientos laterales adicionales.
-
-> ![Informe Final TryHackMe]<img width="1500" height="884" alt="image" src="https://github.com/user-attachments/assets/679b0f5e-4ea6-42ac-9b91-3cfb74a12a65" /> 
-> *Figura 3: Informe de incidente finalizado y clasificado correctamente para su cierre en el laboratorio.*
+## 🛡️ Acciones Realizadas
+1. **Validación de Logs:** Verificación exhaustiva en Splunk descartando conexiones exitosas a la URL.
+2. **Monitoreo Preventivo:** Se mantuvo el host bajo observación durante 24 horas sin detectar anomalías.
+3. **Cierre del Caso:** Registro del evento como Falso Positivo para mejorar el ajuste de las reglas de detección del SOC.
 
 ---
 
 ## 🛠️ Herramientas y Metodología
-* **Splunk (SIEM):** Utilizado para la correlación de logs JSON y reconstrucción de la línea de tiempo.
-* **Análisis de Cabeceras:** Inspección de campos `sender`, `recipient` y `direction` para identificar el flujo del ataque.
-* **TryHackMe SOC Lab:** Escenario de entrenamiento para la respuesta ante incidentes en entornos corporativos.
-* **Metodología:** Basada en el ciclo de vida de respuesta a incidentes del NIST.
+* **Splunk (SIEM):** Correlación de logs de tráfico y eventos de seguridad.
+* **Firewall Log Audit:** Inspección de políticas de acceso y registros de conexión.
+* **Metodología:** Verificación de alertas y triaje de incidentes.
