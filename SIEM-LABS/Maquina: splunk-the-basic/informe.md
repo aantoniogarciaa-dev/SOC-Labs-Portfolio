@@ -36,14 +36,16 @@ Posteriormente, durante la carga del archivo `VPNLogs.json`, se seleccionó el �
 
 En un entorno real de SOC, la correcta separación por índices mejora el rendimiento de búsqueda, la organización de datos y la capacidad de análisis.
 
-<img width="1356" height="859" alt="image" src="https://github.com/user-attachments/assets/9b2f3339-5a66-4e33-918a-45989cbe0f48" />
+<img width="1254" height="706" alt="image" src="https://github.com/user-attachments/assets/20d849ae-14b0-42c8-acb5-ede754ca26de" />
+
 
 
 # 🔎 Pregunta 1  
 ## ¿Cuántos eventos están presentes en el log?
 2862
 
-<img width="798" height="125" alt="image" src="https://github.com/user-attachments/assets/d267b736-5fad-4e66-9e7d-31e209bd9099" />
+<img width="918" height="63" alt="image" src="https://github.com/user-attachments/assets/51f5fc07-6f5e-4ec6-83d9-f9be984694b6" />
+
 
 
 # 🔎 Pregunta 2  
@@ -55,8 +57,80 @@ Para obtener el número de eventos asociados al usuario "Maleena", se puede real
 
 ## ✅ Método 1 – Uso de la interfaz gráfica (filtrado manual)
 
-<img width="1245" height="787" alt="image" src="https://github.com/user-attachments/assets/7f8648d8-b7c8-4a46-8707-cc4c37897db7" />
+<img width="1215" height="713" alt="image" src="https://github.com/user-attachments/assets/29dd29d1-2b3d-4814-9804-8e7fb751798d" />
 
-serian
 
-   
+serian 60
+
+## ✅ Método 2 - Uso de consulta
+
+<img width="1249" height="129" alt="image" src="https://github.com/user-attachments/assets/bf4845f6-d0f1-4365-9cff-1a7d4ef552f3" />
+
+
+# 🔎 Pregunta 3  
+## ¿Cuál es el nombre de usuario asociado a la IP 107.14.182.38?
+
+Para identificar el usuario asociado a la dirección IP **107.14.182.38**, se realizó un filtrado específico dentro del índice correspondiente, manteniendo el contexto del host utilizado en el laboratorio.
+
+El usuario es smith
+
+<img width="1209" height="633" alt="image" src="https://github.com/user-attachments/assets/d605d8cf-a756-4d43-af59-9828cb498cff" />
+
+## ✅ Consulta ejecutada
+
+``spl
+index=vpn_logs host="host-names" 107.14.182.38
+
+# 🔎 Pregunta 4  
+## ¿Cuál es el número de eventos que se originaron en todos los países excepto Francia?
+
+Para responder a esta pregunta, se filtraron los eventos excluyendo aquellos cuyo campo `Source_Country` tiene el valor **France**.
+
+---
+
+## ✅ Método 1 – Consulta SPL directa
+
+Se ejecutó la siguiente consulta:
+
+``spl
+index=vpn_logs host="host-names" Source_Country!="France"
+
+<img width="1280" height="599" alt="image" src="https://github.com/user-attachments/assets/f614b94b-ceb2-4309-8108-7488a2e703c6" />
+
+
+
+respuesta correcta 2814
+
+
+
+
+
+## ✅ Método 2 - Uso de consulta
+
+
+# 🔎 Pregunta 5  
+## ¿Cuántos eventos VPN estuvieron asociados a la IP 107.3.206.58?
+
+Para determinar el número de eventos asociados a la dirección IP **107.3.206.58**, se realizó un filtrado específico dentro del índice correspondiente, manteniendo el contexto del host utilizado en el laboratorio.
+
+---
+
+## ✅ Método 1 – Consulta SPL directa
+
+Se ejecutó la siguiente consulta:
+
+``spl
+index=vpn_logs host="host-names" Source_ip="107.3.206.58"
+
+<img width="1233" height="615" alt="image" src="https://github.com/user-attachments/assets/53c67c7c-b467-4ee3-a5d9-79f4d70e570b" />
+
+
+
+respuesta correcta: 14
+
+FINALIZADO.
+
+<img width="491" height="874" alt="image" src="https://github.com/user-attachments/assets/abb46a54-a6f3-43da-8c9b-57cc340e0ec5" />
+
+
+
